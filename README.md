@@ -2,10 +2,10 @@
 
 CarePoint is a web-based hospital management system designed to streamline hospital operations like appointment booking, billing, patient management, and report generation. This project is built using pure HTML, CSS, and JavaScript, and utilizes `localStorage` for data persistence in the browser.
 
-## 🌐 Live Demo
+ Live Demo
 > *(Add your GitHub Pages or Netlify link here if deployed)*
 
-## 📁 Project Structure
+ Project Structure
 
 | File | Description |
 |------|-------------|
@@ -16,18 +16,18 @@ CarePoint is a web-based hospital management system designed to streamline hospi
 | `admin.html` | Admin panel to manage doctor profiles with charts |
 | `reports.html` | Dashboard for summarizing appointments, billing, and patients |
 
-## 💡 Features
+ Features
 
-- ✅ Doctor management (Add/Edit/Delete)
-- 📅 Appointment scheduler with conflict detection
-- 💳 Billing with multiple payment methods and QR/UPI support
-- 📄 PDF and CSV export for invoices and appointment logs
-- 📊 Real-time charts and reports using Chart.js
-- 🔍 Search functionality across modules
-- 💾 LocalStorage-based data persistence
-- 📱 Responsive, mobile-friendly UI
+-  Doctor management (Add/Edit/Delete)
+-  Appointment scheduler with conflict detection
+-  Billing with multiple payment methods and QR/UPI support
+-  PDF and CSV export for invoices and appointment logs
+-  Real-time charts and reports using Chart.js
+-  Search functionality across modules
+-  LocalStorage-based data persistence
+-  Responsive, mobile-friendly UI
 
-## 🛠️ Technologies Used
+ Technologies Used
 
 - HTML5 + CSS3 (responsive design)
 - JavaScript (ES6+)
