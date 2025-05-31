@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reports - CarePoint Hospital</title>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #f0f5f1, #dbe8e4);
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      transition: background 0.3s ease;
+    }
+    header {
+      background: #467a6d;
+      color: white;
+      text-align: center;
+      padding: 40px 0;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+    header h1 {
+      font-size: 36px;
+      margin: 0;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    header p {
+      font-size: 22px;
+      margin-top: 8px;
+      font-weight: 300;
+    }
+    nav {
+      background-color: #e8f5e9;
+      display: flex;
+      justify-content: center;
+      padding: 20px 0;
+      flex-wrap: wrap;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    nav a {
+      margin: 12px 25px;
+      text-decoration: none;
+      color: #467a6d;
+      font-weight: 500;
+      font-size: 16px;
+      transition: color 0.3s ease, transform 0.3s ease;
+    }
+    nav a:hover {
+      color: #3a5c4f;
+      transform: scale(1.05);
+    }
+    .container {
+      padding: 40px;
+      max-width: 1100px;
+      margin: auto;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      margin-top: 30px;
+      margin-bottom: 30px;
+    }
+    h2 {
+      color: #467a6d;
+      font-size: 28px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    .summary {
+      background: #f8faf8;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      margin-bottom: 30px;
+      transition: transform 0.3s ease;
+    }
+    .summary:hover {
+      transform: translateY(-5px);
+    }
+    .summary h3 {
+      color: #467a6d;
+      font-size: 22px;
+      margin-top: 0;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 10px;
+    }
+    .summary p {
+      margin: 12px 0;
+      font-size: 18px;
+      color: #6c8c7b;
+    }
+    .summary p span {
+      font-weight: 600;
+      color: #467a6d;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 15px;
+      text-align: center;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    th {
+      background-color: #467a6d;
+      color: white;
+      font-weight: 500;
+    }
+    tr:nth-child(even) {
+      background-color: #f8faf8;
+    }
+    tr:hover {
+      background-color: #f0f7f3;
+    }
+    footer {
+      background: #467a6d;
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+      font-size: 16px;
+    }
+    /* Scroll Animations */
+    .scroll-reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s ease;
+    }
+    .scroll-reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+      }
+      nav {
+        flex-direction: column;
+        align-items: center;
+      }
+      nav a {
+        margin: 8px 0;
+      }
+      table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="https://s3.agency/wp-content/uploads/2020/04/carepoint-health-logo-stacked.png" alt="CarePoint Hospital Logo" width="150" height="150">
+    <h1>CarePoint Hospital</h1>
+    <p>Reports and Analytics</p>
+  </header>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="appointment.html">Appointments</a>
+    <a href="billing.html">Billing</a>
+    <a href="patients.html">Admitted Patients</a>
+    <a href="admin.html">Admin</a>
+    <a href="reports.html">Reports</a>
+  </nav>
+
+  <div class="container">
+    <h2 class="scroll-reveal">Daily Reports</h2>
+
+    <!-- Today's Summary -->
+    <div class="summary scroll-reveal">
+      <h3>Today's Summary (<span id="todayDate"></span>)</h3>
+      <p>Patients Visited: <span id="todayPatients">0</span></p>
+      <p>Appointments: <span id="todayAppointments">0</span></p>
+      <p>Total Billing: $<span id="todayBilling">0</span></p>
+    </div>
+
+    <!-- Total Till Date -->
+    <div class="summary scroll-reveal">
+      <h3>Total Till Date</h3>
+      <p>Total Patients: <span id="totalPatients">0</span></p>
+      <p>Total Appointments: <span id="totalAppointments">0</span></p>
+      <p>Total Billing: $<span id="totalBilling">0</span></p>
+    </div>
+
+    <!-- Admitted Patients Summary -->
+    <div class="summary scroll-reveal">
+      <h3>Total Admitted Patients</h3>
+      <p>Total Admitted: <span id="totalAdmitted">0</span></p>
+      <p>Currently Admitted: <span id="currentlyAdmitted">0</span></p>
+    </div>
+
+    <!-- Daily Report Table -->
+    <table class="scroll-reveal">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Patients Visited</th>
+          <th>Appointments</th>
+          <th>Total Billing</th>
+        </tr>
+      </thead>
+      <tbody id="reportTableBody">
+        <!-- Filled dynamically -->
+      </tbody>
+    </table>
+  </div>
+
+  <footer>
+    &copy; 2025 CarePoint Hospital. All rights reserved.
+  </footer>
+
+  <script>
+    // Scroll reveal effect
+    window.addEventListener('scroll', () => {
+      const reveals = document.querySelectorAll('.scroll-reveal');
+      for (let i = 0; i < reveals.length; i++) {
+        const windowHeight = window.innerHeight;
+        const elementTop = reveals[i].getBoundingClientRect().top;
+        if (elementTop < windowHeight - 100) {
+          reveals[i].classList.add('visible');
+        }
+      }
+    });
+
+    // Mock function to get data from localStorage (appointments and bills)
+    function getAppointments() {
+      return JSON.parse(localStorage.getItem("appointments") || "[]");
+    }
+
+    function getBills() {
+      return JSON.parse(localStorage.getItem("bills") || "[]");
+    }
+
+    // Mock function to get admitted patients data
+    function getAdmittedPatients() {
+      return JSON.parse(localStorage.getItem("admittedPatients") || "[]");
+    }
+
+    // Function to format currency properly
+    function formatCurrency(amount) {
+      return Number(amount).toLocaleString("en-US", { minimumFractionDigits: 2 });
+    }
+
+    // Function to generate reports
+    function generateReports() {
+      const appointments = getAppointments();
+      const bills = getBills();
+      const admittedPatients = getAdmittedPatients();
+
+      const today = new Date().toISOString().split("T")[0]; // 'YYYY-MM-DD'
+      const reportMap = {};
+
+      // Count appointments
+      appointments.forEach(app => {
+        const date = app.date;
+        if (!reportMap[date]) reportMap[date] = { patients: new Set(), appointments: 0, billing: 0 };
+        reportMap[date].appointments += 1;
+        reportMap[date].patients.add(app.name);
+      });
+
+      // Add billing info
+      bills.forEach(bill => {
+        const date = bill.date;
+        if (!reportMap[date]) reportMap[date] = { patients: new Set(), appointments: 0, billing: 0 };
+        reportMap[date].billing += parseFloat(bill.total || 0);
+      });
+
+      // Populate table with report data
+      const tbody = document.getElementById("reportTableBody");
+      tbody.innerHTML = "";
+
+      const sortedDates = Object.keys(reportMap).sort((a, b) => b.localeCompare(a));
+      let totalAppointments = 0, totalBilling = 0, totalPatients = new Set();
+
+      sortedDates.forEach(date => {
+        const entry = reportMap[date];
+        totalAppointments += entry.appointments;
+        totalBilling += entry.billing;
+        entry.patients.forEach(p => totalPatients.add(p));
+
+        const row = `<tr>
+          <td>${date}</td>
+          <td>${entry.patients.size}</td>
+          <td>${entry.appointments}</td>
+          <td>$${formatCurrency(entry.billing)}</td>
+        </tr>`;
+        tbody.insertAdjacentHTML("beforeend", row);
+      });
+
+      // Today's Data
+      const todayData = reportMap[today] || { patients: new Set(), appointments: 0, billing: 0 };
+      document.getElementById("todayDate").textContent = today;
+      document.getElementById("todayPatients").textContent = todayData.patients.size;
+      document.getElementById("todayAppointments").textContent = todayData.appointments;
+      document.getElementById("todayBilling").textContent = formatCurrency(todayData.billing);
+
+      // Total data
+      document.getElementById("totalPatients").textContent = totalPatients.size;
+      document.getElementById("totalAppointments").textContent = totalAppointments;
+      document.getElementById("totalBilling").textContent = formatCurrency(totalBilling);
+
+      // Admitted Patients Data
+      const totalAdmitted = admittedPatients.length;
+      const currentlyAdmitted = admittedPatients.filter(patient => patient.status === 'Admitted').length;
+      document.getElementById("totalAdmitted").textContent = totalAdmitted;
+      document.getElementById("currentlyAdmitted").textContent = currentlyAdmitted;
+    }
+
+    // Run the report generation when the page loads
+    window.onload = function() {
+      // Trigger scroll reveal on initial load
+      window.dispatchEvent(new Event('scroll'));
+      generateReports();
+    };
+  </script>
+</body>
+</html>

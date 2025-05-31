@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CarePoint Hospital</title>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #f0f5f1, #dbe8e4);
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      transition: background 0.3s ease;
+    }
+
+    header {
+      background: #467a6d;
+      color: white;
+      text-align: center;
+      padding: 40px 0;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    header h1 {
+      font-size: 36px;
+      margin: 0;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    header p {
+      font-size: 22px;
+      margin-top: 8px;
+      font-weight: 300;
+    }
+
+    nav {
+      background-color: #e8f5e9;
+      display: flex;
+      justify-content: center;
+      padding: 20px 0;
+      flex-wrap: wrap;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    nav a {
+      margin: 12px 25px;
+      text-decoration: none;
+      color: #467a6d;
+      font-weight: 500;
+      font-size: 16px;
+      transition: color 0.3s ease, transform 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #3a5c4f;
+      transform: scale(1.05);
+    }
+
+    .container {
+      padding: 40px;
+      max-width: 1100px;
+      margin: auto;
+      text-align: center;
+    }
+
+    .intro {
+      font-size: 20px;
+      color: #467a6d;
+      margin-bottom: 40px;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+
+    .intro.visible {
+      opacity: 1;
+    }
+
+    .services {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 50px;
+      gap: 30px;
+      flex-wrap: wrap;
+      transition: transform 0.3s ease;
+    }
+
+    .service-box {
+      flex: 1;
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      max-width: 320px;
+      margin: 0 auto;
+    }
+
+    .service-box:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .service-box h3 {
+      margin: 0;
+      font-size: 26px;
+      color: #467a6d;
+      font-weight: 600;
+    }
+
+    .service-box p {
+      font-size: 18px;
+      color: #6c8c7b;
+      font-weight: 400;
+    }
+
+    .service-box .details {
+      display: none;
+      font-size: 16px;
+      color: #6c8c7b;
+      margin-top: 20px;
+    }
+
+    /* Scroll Animations */
+    .scroll-reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s ease;
+    }
+
+    .scroll-reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* CTA Banner */
+    .cta-banner {
+      background: #467a6d;
+      color: white;
+      padding: 30px;
+      text-align: center;
+      margin-top: 60px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .cta-banner:hover {
+      transform: scale(1.05);
+    }
+
+    .cta-banner p {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    /* Date and Time Display */
+    .datetime {
+      font-size: 18px;
+      color: #467a6d;
+      margin-top: 20px;
+      font-weight: 300;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .services {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .service-box {
+        margin-bottom: 30px;
+        width: 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="https://s3.agency/wp-content/uploads/2020/04/carepoint-health-logo-stacked.png" alt="CarePoint Hospital Logo" width="150" height="150"> <!-- Hospital Logo -->
+    <h1>CarePoint Hospital</h1>
+    <p>Your Health, Our Priority</p>
+  </header>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="appointment.html">Appointments</a>
+    <a href="billing.html">Billing</a>
+    <a href="patients.html">Admitted Patients</a>
+    <a href="admin.html">Admin</a>
+    <a href="reports.html">Reports</a>
+  </nav>
+
+  <div class="container">
+    <div class="intro scroll-reveal">
+      <p>Welcome to CarePoint Hospital, where we offer top-notch healthcare services. Our goal is to provide high-quality medical care and improve the well-being of our patients.</p>
+    </div>
+
+    <!-- Hospital Services Section -->
+    <div class="services">
+      <div class="service-box" onclick="toggleDetails(this)">
+        <h3>Emergency Care</h3>
+        <p>Available 24/7 for all critical conditions.</p>
+        <div class="details">Our emergency department is equipped with state-of-the-art facilities and a skilled team to handle any emergency.</div>
+      </div>
+      <div class="service-box" onclick="toggleDetails(this)">
+        <h3>Outpatient Services</h3>
+        <p>Consultations, diagnostics, and treatments for various conditions.</p>
+        <div class="details">We provide a wide range of outpatient services from general consultations to specialized treatments.</div>
+      </div>
+      <div class="service-box" onclick="toggleDetails(this)">
+        <h3>Inpatient Care</h3>
+        <p>Comfortable rooms with expert care and attention.</p>
+        <div class="details">Our inpatient department ensures that patients are well cared for, with modern facilities and compassionate staff.</div>
+      </div>
+    </div>
+
+    <!-- CTA Banner -->
+    <div class="cta-banner scroll-reveal">
+      <p>Looking for a reliable healthcare provider? <strong>Contact us today!</strong></p>
+    </div>
+
+    <div class="intro scroll-reveal">
+      <p>Located at the heart of the city, CarePoint Hospital provides comprehensive care for patients of all ages. We are equipped with the latest medical technology and staffed with experienced professionals.</p>
+    </div>
+
+    <!-- Live Date and Time -->
+    <div class="datetime" id="datetime"></div>
+  </div>
+
+  <footer>
+    &copy; 2025 CarePoint Hospital. All rights reserved.
+  </footer>
+
+  <script>
+    // Scroll reveal effect for intro and CTA sections
+    window.addEventListener('scroll', () => {
+      const reveals = document.querySelectorAll('.scroll-reveal');
+      for (let i = 0; i < reveals.length; i++) {
+        const windowHeight = window.innerHeight;
+        const elementTop = reveals[i].getBoundingClientRect().top;
+        if (elementTop < windowHeight - 100) {
+          reveals[i].classList.add('visible');
+        }
+      }
+    });
+
+    // Toggle service box details
+    function toggleDetails(serviceBox) {
+      const details = serviceBox.querySelector('.details');
+      details.style.display = details.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // Function to update the live time and date
+    function updateDateTime() {
+      const now = new Date();
+      const dateString = now.toLocaleString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: true,
+      });
+      document.getElementById('datetime').innerText = dateString;
+    }
+
+    // Update the date and time every second
+    setInterval(updateDateTime, 1000);
+
+    // Call the function immediately to display the time on page load
+    updateDateTime();
+  </script>
+
+</body>
+</html>

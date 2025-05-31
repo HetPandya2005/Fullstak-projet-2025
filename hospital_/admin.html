@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel - CarePoint Hospital</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #f0f5f1, #dbe8e4);
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+    header {
+      background: #467a6d;
+      color: white;
+      text-align: center;
+      padding: 40px 0;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+    header h1 {
+      font-size: 36px;
+      margin: 0;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    header p {
+      font-size: 22px;
+      margin-top: 8px;
+      font-weight: 300;
+    }
+    nav {
+      background-color: #e8f5e9;
+      display: flex;
+      justify-content: center;
+      padding: 20px 0;
+      flex-wrap: wrap;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    nav a {
+      margin: 12px 25px;
+      text-decoration: none;
+      color: #467a6d;
+      font-weight: 500;
+      font-size: 16px;
+      transition: color 0.3s ease, transform 0.3s ease;
+    }
+    nav a:hover {
+      color: #3a5c4f;
+      transform: scale(1.05);
+    }
+    .container {
+      padding: 40px;
+      max-width: 1200px;
+      margin: 40px auto;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    h2, h3 {
+      color: #467a6d;
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+    form {
+      background: #f8faf8;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      margin-bottom: 40px;
+      transition: transform 0.3s ease;
+    }
+    form:hover {
+      transform: translateY(-5px);
+    }
+    label {
+      display: block;
+      font-size: 16px;
+      font-weight: 500;
+      color: #467a6d;
+      margin-bottom: 8px;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      border: 1px solid #c8d8d1;
+      transition: border 0.3s ease;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #467a6d;
+    }
+    button {
+      background-color: #467a6d;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+    button:hover {
+      background-color: #3a5c4f;
+      transform: translateY(-2px);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 15px;
+      text-align: left;
+      font-size: 16px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    th {
+      background-color: #467a6d;
+      color: white;
+      font-weight: 500;
+    }
+    tr:hover {
+      background-color: #f0f7f3;
+    }
+    .action-btns button {
+      width: auto;
+      padding: 8px 16px;
+      margin-right: 8px;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    #searchBar {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #c8d8d1;
+      margin-bottom: 25px;
+      transition: all 0.3s ease;
+    }
+    #searchBar:focus {
+      outline: none;
+      border-color: #467a6d;
+      box-shadow: 0 0 0 2px rgba(70, 122, 109, 0.2);
+    }
+    .chart-section {
+      background: #f8faf8;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      margin-top: 40px;
+    }
+    footer {
+      background: #467a6d;
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+      margin-top: 40px;
+      font-size: 16px;
+    }
+    /* Scroll Animations */
+    .scroll-reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s ease;
+    }
+    .scroll-reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+      }
+      nav {
+        flex-direction: column;
+        align-items: center;
+      }
+      nav a {
+        margin: 8px 0;
+      }
+      .action-btns {
+        display: flex;
+        flex-direction: column;
+      }
+      .action-btns button {
+        margin-bottom: 8px;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="https://s3.agency/wp-content/uploads/2020/04/carepoint-health-logo-stacked.png" alt="CarePoint Hospital Logo" width="150" height="150">
+    <h1>CarePoint Hospital</h1>
+    <p>Admin Panel</p>
+  </header>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="appointment.html">Appointments</a>
+    <a href="billing.html">Billing</a>
+    <a href="patients.html">Admitted Patients</a>
+    <a href="admin.html">Admin</a>
+    <a href="reports.html">Reports</a>
+  </nav>
+
+  <div class="container">
+    <h2 class="scroll-reveal">Admin Dashboard</h2>
+
+    <form id="add-doctor-form" class="scroll-reveal">
+      <h3>Add Doctor</h3>
+      <label for="doctor-name">Doctor Name</label>
+      <input type="text" id="doctor-name" required>
+
+      <label for="specialization">Specialization</label>
+      <select id="specialization" required>
+        <option value="">Select Specialization</option>
+        <option value="Cardiologist">Cardiologist</option>
+        <option value="Neurologist">Neurologist</option>
+        <option value="Orthopedic">Orthopedic</option>
+        <option value="Pediatrician">Pediatrician</option>
+        <option value="General Physician">General Physician</option>
+        <option value="ENT">ENT</option>
+        <option value="Dermatologist">Dermatologist</option>
+      </select>
+
+      <label for="shift">Shift</label>
+      <select id="shift">
+        <option value="Morning">Morning</option>
+        <option value="Evening">Evening</option>
+        <option value="Night">Night</option>
+      </select>
+
+      <button type="submit">Add Doctor</button>
+    </form>
+
+    <input type="text" id="searchBar" placeholder="Search by name or specialization..." class="scroll-reveal"/>
+
+    <h3 class="scroll-reveal">Existing Doctors</h3>
+    <table id="doctor-table" class="scroll-reveal">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Specialization</th>
+          <th>Shift</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div class="chart-section scroll-reveal">
+      <h3>Doctor Specialization Chart</h3>
+      <canvas id="doctorChart" height="100"></canvas>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 CarePoint Hospital. All rights reserved.
+  </footer>
+
+  <script>
+    // Scroll reveal effect
+    window.addEventListener('scroll', () => {
+      const reveals = document.querySelectorAll('.scroll-reveal');
+      for (let i = 0; i < reveals.length; i++) {
+        const windowHeight = window.innerHeight;
+        const elementTop = reveals[i].getBoundingClientRect().top;
+        if (elementTop < windowHeight - 100) {
+          reveals[i].classList.add('visible');
+        }
+      }
+    });
+
+    // Doctor management functionality
+    const form = document.getElementById("add-doctor-form");
+    const tableBody = document.querySelector("#doctor-table tbody");
+    let doctorChart;
+    const ctx = document.getElementById("doctorChart").getContext("2d");
+
+    function getDoctors() {
+      return JSON.parse(localStorage.getItem("doctors") || "[]");
+    }
+
+    function saveDoctors(doctors) {
+      localStorage.setItem("doctors", JSON.stringify(doctors));
+    }
+
+    function renderDoctors() {
+      const doctors = getDoctors();
+      tableBody.innerHTML = '';
+      doctors.forEach((doc, index) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${doc.name}</td>
+          <td>${doc.specialization}</td>
+          <td>${doc.shift}</td>
+          <td class="action-btns">
+            <button onclick="editRow(${index})">Edit</button>
+            <button onclick="deleteRow(${index})">Delete</button>
+          </td>
+        `;
+        tableBody.appendChild(row);
+      });
+      updateChart();
+    }
+
+    function updateChart() {
+      const doctors = getDoctors();
+      const counts = {};
+      doctors.forEach(doc => {
+        counts[doc.specialization] = (counts[doc.specialization] || 0) + 1;
+      });
+
+      const labels = Object.keys(counts);
+      const data = Object.values(counts);
+
+      if (doctorChart) doctorChart.destroy();
+      doctorChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Number of Doctors',
+            data,
+            backgroundColor: '#467a6d',
+            borderColor: '#3a5c4f',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: { 
+            y: { 
+              beginAtZero: true,
+              grid: {
+                color: '#e0e0e0'
+              }
+            },
+            x: {
+              grid: {
+                color: '#e0e0e0'
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              labels: {
+                color: '#467a6d'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      const name = document.getElementById("doctor-name").value.trim();
+      const specialization = document.getElementById("specialization").value;
+      const shift = document.getElementById("shift").value;
+
+      if (!name || !specialization) return;
+
+      const doctors = getDoctors();
+      doctors.push({ name, specialization, shift });
+      saveDoctors(doctors);
+      renderDoctors();
+      form.reset();
+    });
+
+    function deleteRow(index) {
+      if (confirm("Are you sure you want to delete this doctor?")) {
+        const doctors = getDoctors();
+        doctors.splice(index, 1);
+        saveDoctors(doctors);
+        renderDoctors();
+      }
+    }
+
+    function editRow(index) {
+      const doctors = getDoctors();
+      const doc = doctors[index];
+      const name = prompt("Edit name:", doc.name);
+      const specialization = prompt("Edit specialization:", doc.specialization);
+      const shift = prompt("Edit shift:", doc.shift);
+      if (name && specialization && shift) {
+        doctors[index] = { name: name.trim(), specialization: specialization.trim(), shift: shift.trim() };
+        saveDoctors(doctors);
+        renderDoctors();
+      }
+    }
+
+    document.getElementById("searchBar").addEventListener("input", function () {
+      const filter = this.value.toLowerCase();
+      const rows = tableBody.querySelectorAll("tr");
+      rows.forEach(row => {
+        const [name, spec] = [row.children[0].textContent, row.children[1].textContent];
+        row.style.display = name.toLowerCase().includes(filter) || spec.toLowerCase().includes(filter) ? '' : 'none';
+      });
+    });
+
+    window.onload = () => {
+      // Trigger scroll reveal on initial load
+      window.dispatchEvent(new Event('scroll'));
+      
+      const doctors = getDoctors();
+      if (doctors.length === 0) {
+        const defaultDoctors = [
+          { name: "Dr. Anjali Mehta", specialization: "Cardiologist", shift: "Morning" },
+          { name: "Dr. Rahul Verma", specialization: "Neurologist", shift: "Evening" },
+          { name: "Dr. Priya Sharma", specialization: "Orthopedic", shift: "Night" },
+        ];
+        saveDoctors(defaultDoctors);
+      }
+      renderDoctors();
+    };
+  </script>
+</body>
+</html>

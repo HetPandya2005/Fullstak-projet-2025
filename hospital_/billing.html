@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Billing - CarePoint Hospital</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #f0f5f1, #dbe8e4);
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+  
+    header {
+      background: #467a6d;
+      color: white;
+      text-align: center;
+      padding: 40px 0;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+  
+    header h1 {
+      font-size: 36px;
+      margin: 0;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+  
+    header p {
+      font-size: 22px;
+      margin-top: 8px;
+      font-weight: 300;
+    }
+  
+    nav {
+      background-color: #e8f5e9;
+      display: flex;
+      justify-content: center;
+      padding: 20px 0;
+      flex-wrap: wrap;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+  
+    nav a {
+      margin: 12px 25px;
+      text-decoration: none;
+      color: #467a6d;
+      font-weight: 500;
+      font-size: 16px;
+      transition: color 0.3s ease, transform 0.3s ease;
+    }
+  
+    nav a:hover {
+      color: #3a5c4f;
+      transform: scale(1.05);
+    }
+  
+    .container {
+      padding: 40px;
+      max-width: 1100px;
+      margin: auto;
+      text-align: center;
+    }
+  
+    h2 {
+      font-size: 28px;
+      color: #467a6d;
+      margin-bottom: 20px;
+    }
+  
+    form {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+    }
+  
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      color: #467a6d;
+      font-size: 16px;
+    }
+  
+    input,
+    select {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+  
+    button {
+      background-color: #467a6d;
+      color: white;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+  
+    button:hover {
+      background-color: #3a5c4f;
+    }
+  
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+    }
+  
+    th,
+    td {
+      border: 1px solid #ccc;
+      padding: 12px;
+      text-align: center;
+    }
+  
+    th {
+      background-color: #467a6d;
+      color: white;
+    }
+  
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+  
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 16px;
+      color: #467a6d;
+    }
+  
+    #invoice-display {
+      font-size: 18px;
+      color: #467a6d;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+  
+    #export-csv {
+      display: block;
+      margin: 20px auto;
+      background: #467a6d;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+  
+    #export-csv:hover {
+      background-color: #3a5c4f;
+    }
+  
+    footer {
+      background: #467a6d;
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+      margin-top: 30px;
+    }
+  
+    footer p {
+      font-size: 16px;
+    }
+  
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+      }
+  
+      table {
+        font-size: 14px;
+      }
+  
+      input,
+      select,
+      button {
+        font-size: 14px;
+      }
+  
+      .checkbox-group {
+        flex-direction: column;
+      }
+    }
+  </style>
+  
+</head>
+<body>
+  <header>
+    <h1>CarePoint Hospital</h1>
+    <p>Billing Management</p>
+  </header>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="appointment.html">Appointments</a>
+    <a href="billing.html">Billing</a>
+    <a href="patients.html">Admmitted Patients</a>
+    <a href="admin.html">Admin</a>
+    <a href="reports.html">Reports</a>
+  </nav>
+
+  <div class="container">
+    <h2>Generate Patient Bill</h2>
+    <p id="invoice-display"></p>
+    <form id="billing-form">
+      <label for="patient-name">Patient Name:</label>
+      <input type="text" id="patient-name" required />
+
+      <label>Services Rendered:</label>
+      <div class="checkbox-group" id="service-checkboxes">
+        <label><input type="checkbox" value="Consultation" /> Consultation - ₹500</label>
+        <label><input type="checkbox" value="Blood Test" /> Blood Test - ₹300</label>
+        <label><input type="checkbox" value="MRI" /> MRI - ₹2000</label>
+        <label><input type="checkbox" value="X-Ray" /> X-Ray - ₹800</label>
+        <label><input type="checkbox" value="ECG" /> ECG - ₹700</label>
+      </div>
+
+      <label for="total-amount">Total Amount (₹):</label>
+      <input type="number" id="total-amount" readonly required />
+
+      <label for="payment-method">Payment Method:</label>
+      <select id="payment-method" required>
+        <option value="">Select</option>
+        <option value="Cash">Cash</option>
+        <option value="Card">Card</option>
+        <option value="UPI">UPI</option>
+        <option value="Insurance">Insurance</option>
+      </select>
+
+      <label for="payment-status">Payment Status:</label>
+      <select id="payment-status" required>
+        <option value="Paid">Paid</option>
+        <option value="Pending">Pending</option>
+      </select>
+
+      <button type="submit">Generate Bill</button>
+    </form>
+
+    <button id="export-csv">Export Bills to CSV</button>
+
+    <table id="billing-table">
+      <thead>
+        <tr>
+          <th>Patient Name</th>
+          <th>Services</th>
+          <th>Amount (₹)</th>
+          <th>Payment Method</th>
+          <th>Status</th>
+          <th>Delete</th>
+          <th>PDF</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <footer>
+    &copy; 2025 CarePoint Hospital. All rights reserved.
+  </footer>
+
+  <script>
+    const servicePrices = {
+      "Consultation": 500,
+      "Blood Test": 300,
+      "MRI": 2000,
+      "X-Ray": 800,
+      "ECG": 700
+    };
+
+    const checkboxes = document.querySelectorAll("#service-checkboxes input");
+    const totalAmountInput = document.getElementById("total-amount");
+
+    function updateTotal() {
+      let total = 0;
+      checkboxes.forEach(cb => {
+        if (cb.checked) total += servicePrices[cb.value] || 0;
+      });
+      totalAmountInput.value = total;
+    }
+
+    checkboxes.forEach(cb => cb.addEventListener("change", updateTotal));
+
+    // Ensure invoiceCounter starts from 1 if not set or reset
+    let invoiceCounter = parseInt(localStorage.getItem("invoiceCounter"));
+    if (!invoiceCounter || invoiceCounter >= 1003) {
+      invoiceCounter = 1;
+      localStorage.setItem("invoiceCounter", invoiceCounter);
+    }
+
+    const billingHistory = JSON.parse(localStorage.getItem("billingHistory") || "[]");
+
+    function updateInvoiceDisplay() {
+      document.getElementById("invoice-display").innerText = `Next Invoice Number: #${invoiceCounter}`;
+    }
+
+    function renderTable() {
+      const tbody = document.querySelector("#billing-table tbody");
+      tbody.innerHTML = "";
+      billingHistory.forEach(entry => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${entry.name}</td>
+          <td>${entry.services}</td>
+          <td>₹${entry.amount}</td>
+          <td>${entry.method}</td>
+          <td>${entry.status}</td>
+          <td><button class="delete-btn" data-id="${entry.invoice}">Delete</button></td>
+          <td><button class="pdf-btn" 
+              data-name="${entry.name}" 
+              data-services="${entry.services}" 
+              data-amount="${entry.amount}" 
+              data-method="${entry.method}" 
+              data-status="${entry.status}" 
+              data-invoice="${entry.invoice}">Download PDF</button></td>`;
+        tbody.appendChild(row);
+      });
+    }
+
+    updateInvoiceDisplay();
+    // renderTable();  <-- Don't auto-render
+
+    document.getElementById("billing-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const name = document.getElementById("patient-name").value.trim();
+      const selectedServices = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
+      const servicesText = selectedServices.join(", ");
+      const amount = totalAmountInput.value;
+      const method = document.getElementById("payment-method").value;
+      const status = document.getElementById("payment-status").value;
+      const invoice = invoiceCounter++;
+
+      localStorage.setItem("invoiceCounter", invoiceCounter);
+      updateInvoiceDisplay();
+
+      if (!name || !selectedServices.length || !amount || !method || !status) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      const newEntry = { name, services: servicesText, amount, method, status, invoice };
+      billingHistory.push(newEntry);
+      localStorage.setItem("billingHistory", JSON.stringify(billingHistory));
+
+      renderTable();
+      this.reset();
+      totalAmountInput.value = "";
+      checkboxes.forEach(cb => cb.checked = false);
+    });
+
+    document.getElementById("billing-table").addEventListener("click", function(e) {
+      if (e.target.classList.contains("delete-btn")) {
+        const invoiceId = parseInt(e.target.dataset.id);
+        const index = billingHistory.findIndex(entry => entry.invoice === invoiceId);
+        if (index !== -1) {
+          billingHistory.splice(index, 1);
+          localStorage.setItem("billingHistory", JSON.stringify(billingHistory));
+          renderTable();
+        }
+      }
+
+      if (e.target.classList.contains("pdf-btn")) {
+        generatePDF(e.target);
+      }
+    });
+
+    async function generatePDF(btn) {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      const name = btn.dataset.name;
+      const services = btn.dataset.services;
+      const amount = btn.dataset.amount;
+      const method = btn.dataset.method;
+      const status = btn.dataset.status;
+      const invoice = btn.dataset.invoice;
+
+      doc.setDrawColor(100);
+      doc.rect(10, 10, 190, 270);
+
+      doc.setFontSize(18);
+      doc.text("CarePoint Hospital", 105, 25, null, null, "center");
+
+      doc.setFontSize(12);
+      doc.text(`Invoice Number: #${invoice}`, 20, 40);
+      doc.text(`Patient Name: ${name}`, 20, 50);
+      doc.text(`Services Rendered: ${services}`, 20, 60);
+      doc.setFontSize(14);
+      doc.setFont(undefined, 'bold');
+      doc.text(`Total Amount: ₹${amount}`, 20, 70);
+      doc.setFont(undefined, 'normal');
+      doc.setFontSize(12);
+      doc.text(`Payment Method: ${method}`, 20, 80);
+      doc.text(`Payment Status: ${status}`, 20, 90);
+      doc.rect(15, 35, 180, 70);
+
+      if (method === "UPI" && status === "Pending") {
+        const upiLink = `upi://pay?pa=carepoint@upi&pn=CarePoint Hospital&am=${amount}&cu=INR`;
+        const canvas = document.createElement("canvas");
+        await QRCode.toCanvas(canvas, upiLink);
+        const imgData = canvas.toDataURL("image/png");
+        doc.addImage(imgData, "PNG", 140, 100, 50, 50);
+        doc.text("Scan to Pay (UPI)", 145, 155);
+      }
+
+      doc.setFontSize(11);
+      doc.text("Thank you for choosing CarePoint Hospital!", 20, 180);
+      doc.save(`Invoice_${invoice}.pdf`);
+    }
+
+    document.getElementById("export-csv").addEventListener("click", function() {
+      let csv = "Invoice Number,Patient Name,Services,Amount,Method,Status\n";
+      billingHistory.forEach(entry => {
+        csv += `${entry.invoice},"${entry.name}","${entry.services}",${entry.amount},${entry.method},${entry.status}\n`;
+      });
+      const blob = new Blob([csv], { type: "text/csv" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "CarePoint_Billing_Export.csv";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+  </script>
+</body>
+</html>

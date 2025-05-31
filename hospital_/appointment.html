@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Appointment Booking - CarePoint Hospital</title>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #f0f5f1, #dbe8e4);
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+  
+    header {
+      background: #467a6d;
+      color: white;
+      text-align: center;
+      padding: 40px 0;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+  
+    header h1 {
+      font-size: 36px;
+      margin: 0;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+  
+    header p {
+      font-size: 22px;
+      margin-top: 8px;
+      font-weight: 300;
+    }
+  
+    nav {
+      background-color: #e8f5e9;
+      display: flex;
+      justify-content: center;
+      padding: 20px 0;
+      flex-wrap: wrap;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+  
+    nav a {
+      margin: 12px 25px;
+      text-decoration: none;
+      color: #467a6d;
+      font-weight: 500;
+      font-size: 16px;
+      transition: color 0.3s ease, transform 0.3s ease;
+    }
+  
+    nav a:hover {
+      color: #3a5c4f;
+      transform: scale(1.05);
+    }
+  
+    .container {
+      padding: 40px;
+      max-width: 800px;
+      margin: 40px auto;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+  
+    h2 {
+      font-size: 28px;
+      color: #467a6d;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+  
+    form {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+    }
+  
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      color: #467a6d;
+      font-size: 16px;
+    }
+  
+    input,
+    select {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+  
+    button {
+      background-color: #467a6d;
+      color: white;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      width: 100%;
+    }
+  
+    button:hover {
+      background-color: #3a5c4f;
+    }
+  
+    #downloadCsv {
+      background-color: #467a6d;
+      margin-top: 20px;
+    }
+  
+    #downloadCsv:hover {
+      background-color: #0a74a7;
+    }
+  
+    footer {
+      background: #467a6d;
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+      margin-top: 30px;
+    }
+  
+    footer p {
+      font-size: 16px;
+    }
+  
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+      }
+  
+      input,
+      select,
+      button {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>CarePoint Hospital</h1>
+    <p>Book an Appointment with Our Expert Doctors</p>
+  </header>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="appointment.html">Appointments</a>
+    <a href="billing.html">Billing</a>
+    <a href="patients.html">Admitted Patients</a>
+    <a href="admin.html">Admin</a>
+    <a href="reports.html">Reports</a>
+  </nav>
+
+  <div class="container">
+    <h2>Appointment Form</h2>
+    <form id="appointmentForm">
+      <label for="name">Patient Name</label>
+      <input type="text" id="name" required />
+
+      <label for="date">Date</label>
+      <input type="date" id="date" required />
+
+      <label for="time">Time</label>
+      <input type="time" id="time" required />
+
+      <label for="doctor">Select Doctor</label>
+      <select id="doctor" required>
+        <option value="">Loading doctors...</option>
+      </select>
+
+      <button type="submit">Book Appointment</button>
+    </form>
+
+    <button id="downloadCsv">Download Appointments as CSV</button>
+  </div>
+
+  <footer>
+    &copy; 2025 CarePoint Hospital. All rights reserved.
+  </footer>
+
+  <script>
+    function loadDoctors() {
+      const doctorSelect = document.getElementById("doctor");
+      const doctors = JSON.parse(localStorage.getItem("doctors") || "[]");
+
+      doctorSelect.innerHTML = '<option value="">Select a doctor</option>';
+      doctors.forEach(doc => {
+        const option = document.createElement("option");
+        option.value = doc.name;
+        option.textContent = `${doc.name} (${doc.specialization})`;
+        doctorSelect.appendChild(option);
+      });
+    }
+
+    function getAppointments() {
+      return JSON.parse(localStorage.getItem("appointments") || "[]");
+    }
+
+    function saveAppointments(appointments) {
+      localStorage.setItem("appointments", JSON.stringify(appointments));
+    }
+
+    function isDoctorAvailable(doctor, date, time) {
+      const appointments = getAppointments();
+      return !appointments.some(app => app.doctor === doctor && app.date === date && app.time === time);
+    }
+
+    function isPatientFree(name, date, time) {
+      const appointments = getAppointments();
+      return !appointments.some(app => app.name.toLowerCase() === name.toLowerCase() && app.date === date && app.time === time);
+    }
+
+    function downloadAppointmentsAsCSV() {
+      const appointments = getAppointments();
+      if (appointments.length === 0) {
+        alert("No appointments to export.");
+        return;
+      }
+
+      const header = "Patient Name,Date,Time,Doctor\n";
+      const rows = appointments.map(app =>
+        `"${app.name}","${app.date}","${app.time}","${app.doctor}"`
+      ).join("\n");
+
+      const csvContent = header + rows;
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.setAttribute("href", url);
+      link.setAttribute("download", "appointments.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    window.onload = () => {
+      loadDoctors();
+
+      const form = document.getElementById("appointmentForm");
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const name = document.getElementById("name").value.trim();
+        const date = document.getElementById("date").value;
+        const time = document.getElementById("time").value;
+        const doctor = document.getElementById("doctor").value;
+
+        if (!name || !date || !time || !doctor) {
+          alert("Please fill in all fields.");
+          return;
+        }
+
+        if (!isDoctorAvailable(doctor, date, time)) {
+          alert(`Sorry, Dr. ${doctor} is already booked on ${date} at ${time}. Please choose another time.`);
+          return;
+        }
+
+        if (!isPatientFree(name, date, time)) {
+          alert(`You already have an appointment at ${date} ${time}. You can't book multiple doctors at the same time.`);
+          return;
+        }
+
+        const newAppointment = { name, date, time, doctor };
+        const appointments = getAppointments();
+        appointments.push(newAppointment);
+        saveAppointments(appointments);
+
+        alert("Appointment booked successfully!");
+        form.reset();
+      });
+
+      document.getElementById("downloadCsv").addEventListener("click", downloadAppointmentsAsCSV);
+    };
+  </script>
+</body>
+</html>
