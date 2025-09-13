@@ -22,7 +22,6 @@ CarePoint is a web-based hospital management system designed to streamline hospi
 -  Appointment scheduler with conflict detection
 -  Billing with multiple payment methods and QR/UPI support
 -  PDF and CSV export for invoices and appointment logs
--  Real-time charts and reports using Chart.js
 -  Search functionality across modules
 -  LocalStorage-based data persistence
 -  Responsive, mobile-friendly UI
@@ -31,6 +30,5 @@ CarePoint is a web-based hospital management system designed to streamline hospi
 
 - HTML5 + CSS3 (responsive design)
 - JavaScript (ES6+)
-- Chart.js for data visualization
 - jsPDF for PDF generation
 - QRCode.js for payment QR generation
